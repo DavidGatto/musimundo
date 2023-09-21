@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Musimundo</title>
+    <style>
+      /* Estilos generales */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+      }
+      header {
+        background-color: #d12127;
+        color: #fff;
+        text-align: center;
+        padding: 20px 0;
+      }
+      header h1 {
+        font-size: 2rem;
+        margin: 0;
+      }
+      nav {
+        background-color: #222;
+        text-align: center;
+      }
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      nav ul li {
+        display: inline;
+        margin-right: 20px;
+      }
+      nav ul li a {
+        text-decoration: none;
+        color: #fff;
+      }
+      /* Estilos para dispositivos pequeños */
+      @media (max-width: 768px) {
+        header h1 {
+          font-size: 1.5rem;
+        }
+        nav ul li {
+          display: block;
+          margin-bottom: 10px;
+        }
+      }
+      /* Estilos para secciones */
+      section {
+        margin: 20px;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        display: none;
+      }
+      h2 {
+        color: #222;
+      }
+      /* Estilos para el pie de página */
+      footer {
+        text-align: center;
+        padding: 10px;
+        background-color: #222;
+        color: #fff;
+      }
+      /* Estilos personalizados para las secciones */
+      #inicio {
+        background-color: #fff;
+        color: #222;
+      }
+      #productos {
+        background-color: #fff;
+        color: #222;
+      }
+      #ofertas {
+        background-color: #fff;
+        color: #222;
+      }
+      #contacto {
+        background-color: #fff;
+        color: #222;
+      }
+      /* Estilos para los productos */
+      .producto {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px;
+      }
+      .boton-comprar {
+        background-color: #d12127;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+      /* Estilos para el carrito de compras */
+      #carrito {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background-color: #f8f8f8;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 5px;
+        display: none;
+        max-width: 300px;
+        overflow-y: auto;
+      }
+      #carrito h3 {
+        margin-top: 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      .producto-carrito {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+      }
+      .producto-carrito .nombre {
+        flex-grow: 1;
+        margin-left: 10px;
+      }
+      .producto-carrito .cantidad {
+        margin-right: 10px;
+      }
+      .boton-eliminar {
+        background-color: #d12127;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+      .boton-comprar-finalizar {
+        background-color: #d12127;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+    </style>
+    <script>
+      // Datos de productos (nombre y precio)
+      var productos = [
+        { nombre: "Televisor LED 4K", precio: 500 },
+        { nombre: "Lavadora de Carga Frontal", precio: 400 },
+        { nombre: "Refrigeradora de Última Generación", precio: 600 },
+        { nombre: "Smartphone de Alta Gama", precio: 700 },
+        { nombre: "Lavadora a mitad de precio", precio: 200 },
+        { nombre: "Smart TV con descuento", precio: 450 },
+        { nombre: "Envío gratuito", precio: 0 },
+      ];
+
+      // Carrito de compras
+      var carrito = [];
+
+      // Función para mostrar una sección y ocultar las demás
+      function mostrarSeccion(seccionId) {
+        var secciones = document.querySelectorAll("section");
+        for (var i = 0; i < secciones.length; i++) {
+          secciones[i].style.display = "none";
+        }
+        document.getElementById(seccionId).style.display = "block";
+      }
+
+      // Función para agregar un producto al carrito
+      function agregarAlCarrito(productoIndex) {
+        var producto = productos[productoIndex];
+        carrito.push(producto);
+        actualizarCarrito();
+        W;
+      }
+
+      // Función para eliminar un producto del carrito
+      function eliminarDelCarrito(productoIndex) {
+        carrito.splice(productoIndex, 1);
+        actualizarCarrito();
+      }
+
+      // Función para actualizar la vista del carrito
+      function actualizarCarrito() {
+        var carritoContainer = document.getElementById("carrito");
+        carritoContainer.innerHTML = "";
+        if (carrito.length === 0) {
+          carritoContainer.style.display = "none";
+          return;
+        }
+        carritoContainer.style.display = "block";
+        var total = 0;
+        var carritoItems = "";
+        for (var i = 0; i < carrito.length; i++) {
+          var producto = carrito[i];
+          total += producto.precio;
+          carritoItems += `
+                    <div class="producto-carrito">
+                        <div class="nombre">${producto.nombre}</div>
+                        <div class="cantidad">1</div>
+                        <div class="precio">$${producto.precio}</div>
+                        <div class="boton-eliminar" onclick="eliminarDelCarrito(${i})">Eliminar</div>
+                    </div>
+                `;
+        }
+        carritoContainer.innerHTML = `
+                <h3>Carrito de Compras</h3>
+                ${carritoItems}
+                <div class="boton-comprar-finalizar" onclick="finalizarCompra(${total})">Finalizar Compra</div>
+            `;
+      }
+
+      // Función para finalizar la compra (simulación)
+      function finalizarCompra(total) {
+        var carritoContainer = document.getElementById("carrito");
+        carritoContainer.innerHTML = `
+                <h3>¡Gracias por su compra!</h3>
+                <p>Total: $${total}</p>
+            `;
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Musimundo</h1>
+      <nav>
+        <ul>
+          <li><a href="#" onclick="mostrarSeccion('inicio')">Inicio</a></li>
+          <li>
+            <a href="#" onclick="mostrarSeccion('productos')">Productos</a>
+          </li>
+          <li><a href="#" onclick="mostrarSeccion('ofertas')">Ofertas</a></li>
+          <li><a href="#" onclick="mostrarSeccion('contacto')">Contacto</a></li>
+          <li><a href="#" onclick="mostrarSeccion('carrito')">Carrito</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section id="inicio" style="display: block">
+      <h2>¡Bienvenido a Musimundo!</h2>
+      <p>
+        Somos tu tienda de confianza para productos de electrónica y
+        electrodomésticos. Ofrecemos una amplia gama de productos de alta
+        calidad para satisfacer tus necesidades.
+      </p>
+      <p><b>Nuestra Historia:</b></p>
+      <p>
+        La empresa Musimundo fue creada en 1952 bajo el nombre de Elgar
+        Disquería. No fue hasta la década de 1970 que apareció el primer local
+        con la marca Musimundo, marcando el inicio de un viaje emocionante en la
+        industria minorista de electrónica y electrodomésticos.
+      </p>
+      <p>
+        En 1998, Musimundo dio un gran paso al ser adquirida por el Grupo Exxel,
+        lo que desencadenó un ambicioso plan de expansión. La compañía pasó de
+        tener 62 locales en 1998 a 120 en 1999. Sin embargo, en 2001, la crisis
+        económica en Argentina, la piratería y una confianza excesiva en el
+        mercado tuvieron un impacto negativo en Musimundo. La empresa se vio
+        obligada a presentar un concurso de acreedores y cerrar alrededor de 30
+        locales.
+      </p>
+      <p>
+        En 2003, Musimundo cambió de manos nuevamente al ser adquirida por el
+        Grupo Pegasus. A pesar de los esfuerzos por aumentar las ventas, la
+        empresa continuó enfrentando desafíos financieros y, en 2011, aún estaba
+        en concurso de acreedores. Durante este período, cerraron sucursales
+        emblemáticas como la de Santa Fe y Callao en la Ciudad de Buenos Aires.
+      </p>
+      <p>
+        Finalmente, en 2011, Electrónica Megatone y Carsa, licenciatarias de la
+        marca Megatone, adquirieron la marca Musimundo y sus locales. Esta
+        adquisición llevó al cambio de nombre de algunas tiendas Megatone a
+        Musimundo, ampliando así el catálogo de productos para incluir artículos
+        para el hogar y electrodomésticos. La decisión de compra y cambio de
+        nombre se basó en el reconocimiento y la presencia de Musimundo en
+        Buenos Aires.
+      </p>
+      <p>
+        Hoy, Musimundo continúa ofreciendo una amplia variedad de productos
+        electrónicos y electrodomésticos de alta calidad. Nuestra misión es
+        brindarte la mejor experiencia de compra y satisfacer tus necesidades
+        tecnológicas.
+      </p>
+      <p>
+        ¡Explora nuestras últimas novedades y promociones exclusivas! Tu
+        satisfacción es nuestra prioridad.
+      </p>
+      <img src="musimundo-logo.png" alt="" width="200" />
+    </section>
+
+    <section id="productos">
+      <h2>Productos Destacados</h2>
+      <div class="producto">
+        <h3>Televisor LED 4K</h3>
+        <p>
+          Disfruta de la mejor calidad de imagen con nuestros televisores 4K.
+          Tamaños disponibles: 42", 55", 65".
+        </p>
+        <button class="boton-comprar" onclick="agregarAlCarrito(0)">
+          Agregar al carrito
+        </button>
+      </div>
+      <div class="producto">
+        <h3>Lavadora de Carga Frontal</h3>
+        <p>
+          Ahorra energía y agua con nuestras lavadoras de carga frontal.
+          Capacidad de carga: 7kg, 9kg, 12kg.
+        </p>
+        <button class="boton-comprar" onclick="agregarAlCarrito(1)">
+          Agregar al carrito
+        </button>
+      </div>
+      <div class="producto">
+        <h3>Refrigeradora de Última Generación</h3>
+        <p>
+          Mantén tus alimentos frescos por más tiempo con nuestras
+          refrigeradoras. Capacidad: 300L, 450L, 600L.
+        </p>
+        <button class="boton-comprar" onclick="agregarAlCarrito(2)">
+          Agregar al carrito
+        </button>
+      </div>
+      <div class="producto">
+        <h3>Smartphone de Alta Gama</h3>
+        <p>
+          Descubre la última tecnología en smartphones con los nuevos
+          dispositivos de Apple.
+        </p>
+        <button class="boton-comprar" onclick="agregarAlCarrito(3)">
+          Agregar al carrito
+        </button>
+      </div>
+    </section>
+
+    <section id="ofertas">
+      <h2>Ofertas Especiales</h2>
+      <div class="producto">
+        <h3>Lavadora a mitad de precio</h3>
+        <p>
+          Compra tu lavadora de carga frontal y obtén la segunda a mitad de
+          precio.
+        </p>
+        <button class="boton-comprar" onclick="agregarAlCarrito(4)">
+          Agregar al carrito
+        </button>
+      </div>
+      <div class="producto">
+        <h3>Smart TV con descuento en tu proxima compra</h3>
+        <p>
+          Con la compra de tu Smart TV recibi un 10% de descuento en tu proxima
+          compra.
+        </p>
+        <button class="boton-comprar" onclick="agregarAlCarrito(5)">
+          Agregar al carrito
+        </button>
+      </div>
+      <div class="producto">
+        <h3>Envío gratuito</h3>
+        <p>
+          Disfruta de envío gratuito en todas las compras superiores a $500.
+        </p>
+        <button class="boton-comprar" onclick="agregarAlCarrito(6)">
+          Agregar al carrito
+        </button>
+      </div>
+    </section>
+
+    <section id="contacto">
+      <h2>Contacto</h2>
+      <p>Estamos aquí para ayudarte. Puedes contactarnos en:</p>
+      <ul>
+        <li>Correo electrónico: contacto@musimundo.com</li>
+        <li>Teléfono: 123-456-789</li>
+        <li>Dirección: 9 de Julio, Buenos Aires</li>
+      </ul>
+      <p>¡Esperamos verte pronto en nuestras tiendas!</p>
+    </section>
+
+    <div id="carrito"></div>
+
+    <footer>
+      <p>&copy; 2023 Musimundo. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Carrito de compras -->
+    <div id="carrito">
+      <h3>Carrito de Compras</h3>
+    </div>
+  </body>
+</html>
